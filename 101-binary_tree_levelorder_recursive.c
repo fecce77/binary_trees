@@ -1,9 +1,11 @@
 #include "binary_trees.h"
 
 /**
- * struct node_s - singly linked list
- * @node: const binary tree node
- * @next: points to the next node
+ * struct node_s - Defines a node for a singly linked list.
+ * @node: A pointer to a constant binary tree node.
+ * @next: A pointer to the next element in the linked list.
+ *
+ * Description: A struct for encapsulating binary tree nodes in a linked list.
  */
 typedef struct node_s
 {
@@ -11,20 +13,25 @@ typedef struct node_s
 	struct node_s *next;
 } ll;
 
+/* Forward declarations of functions */
 ll *append(ll *head, const binary_tree_t *btnode);
 void free_list(ll *head);
 ll *get_children(ll *head, const binary_tree_t *parent);
 void levels_rec(ll *head, void (*func)(int));
 
 /**
- * binary_tree_levelorder - Goes through a binary tree
- *                          using level-order traversal.
- * @tree: Pointer to the root node of the tree to traverse.
- * @func: Pointer to a function to call for each node.
+ * binary_tree_levelorder - Traverses a binary tree in level-order.
+ * @tree: A pointer to the root node of the tree.
+ * @func: A function pointer to apply on each node's value.
+ *
+ * Return: Void.
  */
 void binary_tree_levelorder(const binary_tree_t *tree, void (*func)(int))
 {
 	ll *children = NULL;
+
+	if (!tree || !func)
+		return;
 
 	func(tree->n);
 	children = get_children(children, tree);
@@ -34,9 +41,11 @@ void binary_tree_levelorder(const binary_tree_t *tree, void (*func)(int))
 }
 
 /**
- * levels_rec - Calls func on all nodes at each level.
- * @head: Pointer to head of linked list with nodes at one level.
- * @func: Pointer to a function to call for each node.
+ * levels_rec - Executes func on each node at the current level.
+ * @head: A pointer to the first node in the linked list for the current level.
+ * @func: A function pointer to apply on each node's value.
+ *
+ * Return: Void.
  */
 void levels_rec(ll *head, void (*func)(int))
 {
@@ -44,7 +53,8 @@ void levels_rec(ll *head, void (*func)(int))
 
 	if (!head)
 		return;
-	for (curr = head; curr != NULL; curr = curr->next)
+
+	for (curr = head; curr; curr = curr->next)
 	{
 		func(curr->node->n);
 		children = get_children(children, curr->node);
@@ -54,10 +64,11 @@ void levels_rec(ll *head, void (*func)(int))
 }
 
 /**
- * get_children - appends children of parent to linked list.
- * @head: Pointer to head of linked list where children will be appended.
- * @parent: Pointer to node whose children we want to append.
- * Return: Pointer to head of linked list of children.
+ * get_children - Adds the children of a parent node to a linked list.
+ * @head: A pointer to the first node in the linked list.
+ * @parent: A pointer to the parent node.
+ *
+ * Return: A pointer to the first node in the updated linked list.
  */
 ll *get_children(ll *head, const binary_tree_t *parent)
 {
@@ -69,36 +80,39 @@ ll *get_children(ll *head, const binary_tree_t *parent)
 }
 
 /**
- * append - adds a new node at the end of a linkedlist
- * @head: pointer to head of linked list
- * @btnode: const binary tree node to append
- * Return: pointer to head, or NULL on failure
+ * append - Appends a binary tree node to the end of a linked list.
+ * @head: A pointer to the first node in the linked list.
+ * @btnode: A pointer to a constant binary tree node to append.
+ *
+ * Return: A pointer to the first node in the updated linked list, or NULL if failed.
  */
 ll *append(ll *head, const binary_tree_t *btnode)
 {
 	ll *new = NULL, *last = NULL;
 
 	new = malloc(sizeof(*new));
-	if (new)
+	if (!new)
+		return (NULL);
+
+	new->node = btnode;
+	new->next = NULL;
+	if (!head)
+		head = new;
+	else
 	{
-		new->node = btnode;
-		new->next = NULL;
-		if (!head)
-			head = new;
-		else
-		{
-			last = head;
-			while (last->next)
-				last = last->next;
-			last->next = new;
-		}
+		last = head;
+		while (last->next)
+			last = last->next;
+		last->next = new;
 	}
 	return (head);
 }
 
 /**
- * free_list - frees all the nodes in a linked list
- * @head: pointer to the head of list_t linked list
+ * free_list - Deallocates memory for each node in a linked list.
+ * @head: A pointer to the first node in the linked list.
+ *
+ * Return: Void.
  */
 void free_list(ll *head)
 {
